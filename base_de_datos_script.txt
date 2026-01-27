@@ -1,0 +1,234 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+--para hacer posible el generador de uuid
+
+
+CREATE TABLE administrador(
+ id_administrador UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+correo TEXT unique  NOT NULL,
+
+contrasena TEXT NOT NULL
+
+);
+
+CREATE TABLE cliente(
+
+ id_cliente UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+correo TEXT UNIQUE NOT NULL,
+nombre TEXT NOT NULL,
+cedula TEXT UNIQUE NOT NULL,
+
+apellido TEXT NOT NULL,
+
+contrasena TEXT NOT NULL
+
+);
+
+CREATE TABLE direccion(
+
+id_direccion UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_cliente UUID NOT NULL,
+
+direccion TEXT NOT NULL,
+departamento TEXT NOT NULL,
+ciudad TEXT NOT NULL,
+
+descripcion TEXT NOT NULL
+
+);
+
+CREATE TABLE pedido(
+
+id_pedido UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_cliente UUID NOT NULL,
+fk_direccion UUID NOT NULL,
+
+fk_estado_pedido SMALLINT NOT NULL,
+fecha_creacion date NOT NULL,
+fecha_entrega date  NOT NULL,
+total  NUMERIC(12,2) NOT NULL,
+metodo_de_entrega TEXT NOT NULL
+
+
+);
+
+
+CREATE TABLE categoria(
+
+
+id_categoria UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+nombre TEXT NOT NULL
+
+);
+
+
+CREATE TABLE producto(
+
+
+id_producto UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+nombre TEXT NOT NULL,
+
+descripcion TEXT NOT NULL
+
+);
+
+
+CREATE TABLE pedido_variante(
+id_pedido_variante UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+fk_pedido UUID NOT NULL,
+fk_variante UUID NOT NULL,
+cantidad smallint NOT NULL,
+precio_producto  NUMERIC(12,2) NOT NULL
+
+
+
+);
+
+
+CREATE TABLE categoria_producto(
+id_categoria_producto UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+fk_categoria UUID NOT NULL,
+fk_producto UUID NOT NULL
+
+
+);
+
+CREATE TABLE carrito(
+
+
+id_carrito UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+fk_cliente UUID NOT NULL,
+fk_estado_carrito SMALLINT NOT NULL,
+total NUMERIC(12,2) NOT NULL,
+fecha_creacion date NOT NULL
+
+);
+
+
+
+CREATE TABLE carrito_variante(
+id_carrito_variante UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+fk_carrito UUID NOT NULL,
+fk_variante UUID NOT NULL,
+cantidad smallint,
+precio_producto  NUMERIC(12,2) NOT NULL
+
+
+
+
+);
+
+CREATE TABLE producto_foto(
+
+id_producto_foto UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_producto UUID NOT NULL,
+
+url TEXT NOT NULL,
+
+orden smallint
+);
+
+
+
+CREATE TABLE servicio_variante(
+
+
+id_servicio_variante UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_servicio UUID NOT NULL,
+fk_producto UUID NOT NULL,
+precio NUMERIC(12,2) NOT NULL
+
+);
+
+CREATE TABLE servicio(
+
+id_servicio UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+nombre TEXT NOT NULL
+
+
+
+);
+
+CREATE TABLE variante(
+
+id_variante UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_producto UUID NOT NULL,
+
+stock smallint, 
+precio  NUMERIC(12,2) NOT NULL
+
+
+
+
+);
+
+
+CREATE TABLE variante_atributo(
+
+
+id_variante_atributo UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+fk_variante UUID NOT NULL,
+
+fk_atributo UUID NOT NULL
+
+);
+
+
+CREATE TABLE atributo(
+
+id_atributo UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+nombre TEXT NOT NULL
+
+
+);
+
+CREATE TABLE valor_atributo(
+
+id_valor_atributo UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+fk_atributo UUID NOT NULL,
+
+valor TEXT NOT NULL
+
+
+);
+
+
+-- =================================
+-- TABLAS DE ESTADOS NORMALIZADOS
+-- =================================
+
+CREATE TABLE estado_pedido (
+    id_estado_pedido SMALLSERIAL PRIMARY KEY,
+    nombre TEXT NOT NULL UNIQUE
+);
+
+INSERT INTO estado_pedido (nombre) VALUES
+('pendiente'),
+('pagado'),
+('en_preparacion'),
+('enviado'),
+('entregado'),
+('cancelado');
+
+CREATE TABLE estado_carrito (
+    id_estado_carrito SMALLSERIAL PRIMARY KEY,
+    nombre TEXT NOT NULL UNIQUE
+);
+
+INSERT INTO estado_carrito (nombre) VALUES
+('activo'),
+('cerrado'),
+('abandonado');
+
+
+46 pan
+2 mogollas

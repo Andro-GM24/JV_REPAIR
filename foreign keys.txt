@@ -1,0 +1,90 @@
+
+-- =================================
+-- FOREIGN KEYS
+-- =================================
+
+-- Cliente
+ALTER TABLE direccion
+ADD CONSTRAINT fk_direccion_cliente
+FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente);
+
+ALTER TABLE pedido
+ADD CONSTRAINT fk_pedido_cliente
+FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente);
+
+ALTER TABLE carrito
+ADD CONSTRAINT fk_carrito_cliente
+FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente);
+
+-- Pedido
+ALTER TABLE pedido
+ADD CONSTRAINT fk_pedido_direccion
+FOREIGN KEY (fk_direccion) REFERENCES direccion(id_direccion);
+
+ALTER TABLE pedido_variante
+ADD CONSTRAINT fk_pedido_variante_pedido
+FOREIGN KEY (fk_pedido) REFERENCES pedido(id_pedido);
+
+ALTER TABLE pedido_variante
+ADD CONSTRAINT fk_pedido_variante_variante
+FOREIGN KEY (fk_variante) REFERENCES variante(id_variante);
+
+-- Carrito
+ALTER TABLE carrito_variante
+ADD CONSTRAINT fk_carrito_variante_carrito
+FOREIGN KEY (fk_carrito) REFERENCES carrito(id_carrito);
+
+ALTER TABLE carrito_variante
+ADD CONSTRAINT fk_carrito_variante_variante
+FOREIGN KEY (fk_variante) REFERENCES variante(id_variante);
+
+-- Categoria / Producto
+ALTER TABLE categoria_producto
+ADD CONSTRAINT fk_categoria_producto_categoria
+FOREIGN KEY (fk_categoria) REFERENCES categoria(id_categoria);
+
+ALTER TABLE categoria_producto
+ADD CONSTRAINT fk_categoria_producto_producto
+FOREIGN KEY (fk_producto) REFERENCES producto(id_producto);
+
+-- Producto / Variante / Fotos
+ALTER TABLE producto_foto
+ADD CONSTRAINT fk_producto_foto_producto
+FOREIGN KEY (fk_producto) REFERENCES producto(id_producto);
+
+ALTER TABLE variante
+ADD CONSTRAINT fk_variante_producto
+FOREIGN KEY (fk_producto) REFERENCES producto(id_producto);
+
+-- Atributos
+ALTER TABLE variante_atributo
+ADD CONSTRAINT fk_variante_atributo_variante
+FOREIGN KEY (fk_variante) REFERENCES variante(id_variante);
+
+ALTER TABLE variante_atributo
+ADD CONSTRAINT fk_variante_atributo_atributo
+FOREIGN KEY (fk_atributo) REFERENCES atributo(id_atributo);
+
+ALTER TABLE valor_atributo
+ADD CONSTRAINT fk_valor_atributo_atributo
+FOREIGN KEY (fk_atributo) REFERENCES atributo(id_atributo);
+
+-- Servicios
+ALTER TABLE servicio_variante
+ADD CONSTRAINT fk_servicio_variante_servicio
+FOREIGN KEY (fk_servicio) REFERENCES servicio(id_servicio);
+
+ALTER TABLE servicio_variante
+ADD CONSTRAINT fk_servicio_variante_producto
+FOREIGN KEY (fk_producto) REFERENCES producto(id_producto);
+
+-- Estados de pedido y carrito
+ALTER TABLE pedido
+ADD CONSTRAINT fk_pedido_estado
+FOREIGN KEY (fk_estado_pedido) REFERENCES estado_pedido(id_estado_pedido);
+
+ALTER TABLE carrito
+ADD CONSTRAINT fk_carrito_estado
+FOREIGN KEY (fk_estado_carrito) REFERENCES estado_carrito(id_estado_carrito);
+
+

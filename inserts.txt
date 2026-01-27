@@ -1,0 +1,157 @@
+-- =================================
+-- ADMINISTRADOR
+-- =================================
+INSERT INTO administrador (correo, contrasena)
+VALUES
+('admin1@tienda.com', 'admin123'),
+('admin2@tienda.com', 'admin456');
+
+-- =================================
+-- CLIENTES
+-- =================================
+INSERT INTO cliente (correo, nombre, apellido, cedula, contrasena)
+VALUES
+('juan@mail.com', 'Juan', 'Perez', '12345678', 'juan123'),
+('maria@mail.com', 'Maria', 'Lopez', '87654321', 'maria123');
+
+-- =================================
+-- DIRECCIONES
+-- =================================
+INSERT INTO direccion (fk_cliente, direccion, departamento, ciudad, descripcion)
+VALUES
+((SELECT id_cliente FROM cliente WHERE nombre='Juan'), 'Calle 123 #45-67', 'Cundinamarca', 'Bogotá', 'Casa principal'),
+((SELECT id_cliente FROM cliente WHERE nombre='Maria'), 'Carrera 89 #12-34', 'Cundinamarca', 'Bogotá', 'Apartamento');
+
+-- =================================
+-- ESTADOS DE PEDIDO
+-- (ya se insertaron al crear la tabla)
+
+-- =================================
+-- PEDIDOS
+-- =================================
+INSERT INTO pedido (fk_cliente, fk_direccion, fk_estado_pedido, fecha_creacion, fecha_entrega, total, metodo_de_entrega)
+VALUES
+(
+    (SELECT id_cliente FROM cliente WHERE nombre='Juan'),
+    (SELECT id_direccion FROM direccion WHERE fk_cliente=(SELECT id_cliente FROM cliente WHERE nombre='Juan')),
+    (SELECT id_estado_pedido FROM estado_pedido WHERE nombre='pendiente'),
+    '2026-01-16',
+    '2026-01-18',
+    150000,
+    'domicilio'
+),
+(
+    (SELECT id_cliente FROM cliente WHERE nombre='Maria'),
+    (SELECT id_direccion FROM direccion WHERE fk_cliente=(SELECT id_cliente FROM cliente WHERE nombre='Maria')),
+    (SELECT id_estado_pedido FROM estado_pedido WHERE nombre='pagado'),
+    '2026-01-15',
+    '2026-01-17',
+    250000,
+    'retiro en tienda'
+);
+
+-- =================================
+-- CATEGORIAS
+-- =================================
+INSERT INTO categoria (nombre)
+VALUES
+('Electrónica'),
+('Hogar'),
+('Computadores');
+
+-- =================================
+-- PRODUCTOS
+-- =================================
+INSERT INTO producto (nombre, descripcion)
+VALUES
+('Laptop HP', 'Laptop HP Core i5 16GB RAM 512GB SSD'),
+('Smartphone Samsung', 'Samsung Galaxy S21 128GB'),
+('Cafetera Nespresso', 'Cafetera automática Nespresso');
+
+-- =================================
+-- VARIANTES
+-- =================================
+INSERT INTO variante (fk_producto, stock, precio)
+VALUES
+((SELECT id_producto FROM producto WHERE nombre='Laptop HP'), 10, 3000000),
+((SELECT id_producto FROM producto WHERE nombre='Smartphone Samsung'), 15, 2000000),
+((SELECT id_producto FROM producto WHERE nombre='Cafetera Nespresso'), 5, 800000);
+
+-- =================================
+-- ATRIBUTOS Y VALORES
+-- =================================
+INSERT INTO atributo (nombre)
+VALUES ('Color'), ('Capacidad');
+
+INSERT INTO valor_atributo (fk_atributo, valor)
+VALUES
+((SELECT id_atributo FROM atributo WHERE nombre='Color'), 'Negro'),
+((SELECT id_atributo FROM atributo WHERE nombre='Color'), 'Blanco'),
+((SELECT id_atributo FROM atributo WHERE nombre='Capacidad'), '16GB'),
+((SELECT id_atributo FROM atributo WHERE nombre='Capacidad'), '512GB');
+
+-- =================================
+-- VARIANTE_ATRIBUTO
+-- =================================
+INSERT INTO variante_atributo (fk_variante, fk_atributo)
+VALUES
+((SELECT id_variante FROM variante WHERE fk_producto=(SELECT id_producto FROM producto WHERE nombre='Laptop HP')), 
+ (SELECT id_atributo FROM atributo WHERE nombre='Capacidad')),
+((SELECT id_variante FROM variante WHERE fk_producto=(SELECT id_producto FROM producto WHERE nombre='Smartphone Samsung')), 
+ (SELECT id_atributo FROM atributo WHERE nombre='Color'));
+
+-- =================================
+-- CATEGORIA_PRODUCTO
+-- =================================
+INSERT INTO categoria_producto (fk_categoria, fk_producto)
+VALUES
+((SELECT id_categoria FROM categoria WHERE nombre='Computadores'), 
+ (SELECT id_producto FROM producto WHERE nombre='Laptop HP')),
+((SELECT id_categoria FROM categoria WHERE nombre='Electrónica'), 
+ (SELECT id_producto FROM producto WHERE nombre='Smartphone Samsung'));
+
+-- =================================
+-- CARRITOS
+-- =================================
+INSERT INTO carrito (fk_cliente, fk_estado_carrito, total, fecha_creacion)
+VALUES
+(
+    (SELECT id_cliente FROM cliente WHERE nombre='Juan'),
+    (SELECT id_estado_carrito FROM estado_carrito WHERE nombre='activo'),
+    3000000,
+    '2026-01-16'
+);
+
+-- =================================
+-- CARRITO_VARIANTE
+-- =================================
+INSERT INTO carrito_variante (fk_carrito, fk_variante, cantidad, precio_producto)
+VALUES
+(
+    (SELECT id_carrito FROM carrito WHERE fk_cliente=(SELECT id_cliente FROM cliente WHERE nombre='Juan')),
+    (SELECT id_variante FROM variante WHERE fk_producto=(SELECT id_producto FROM producto WHERE nombre='Laptop HP')),
+    1,
+    3000000
+);
+
+-- =================================
+-- SERVICIOS
+-- =================================
+INSERT INTO servicio (nombre)
+VALUES ('Garantía Extendida'), ('Instalación a domicilio');
+
+-- =================================
+-- SERVICIO_VARIANTE
+-- =================================
+INSERT INTO servicio_variante (fk_servicio, fk_producto, precio)
+VALUES
+(
+    (SELECT id_servicio FROM servicio WHERE nombre='Garantía Extendida'),
+    (SELECT id_producto FROM producto WHERE nombre='Laptop HP'),
+    200000
+),
+(
+    (SELECT id_servicio FROM servicio WHERE nombre='Instalación a domicilio'),
+    (SELECT id_producto FROM producto WHERE nombre='Cafetera Nespresso'),
+    50000
+);
